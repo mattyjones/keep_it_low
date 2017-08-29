@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Ansible and Pagerduty</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Slides -->
+			<div class="slides">
+                <!--- Part 1 The Problem -->
+                <!-- Title -->
+                <section>
+					<h1>Ansible and Pagerduty</h1>
+                    <p>The Good, The Bad, The I'm Screwed</p>
+                    <aside class="notes">
+                        <ul>
+                            <li>need to know peoples background before I start to tailor the talk</li>
+                            <li></li>
+                            <li>how many are familar with automation tooling (chef/puppet/ansible/etc)?</li>
+                            <li>how many are product developers (features requests, external cutomer bits)?</li>
+                            <li>how many are familar with Python already?</li>
+                            <li>how many have no idea what I am talking about?</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <!-- Persoanl Background -->
+				<section>
+                    <h2>whoami</h2>
+                    <p>I am an operational tool and infrastructure developer that has mild OCD and hates doing things twice.
+                    <img style="float: left;" src="images/moss1.png"></p>
+                    <aside class="notes">
+                        <ul>
+                            <li>tool developer</li>
+                            <li>used to joke about automating myself out of a job, now I know it is possible</li>
+                        </ul>
+                    </aside>
+				</section>
+
+				<!-- Terminology -->
+				<section>
+                    <section>
+                        <h2>Common Terms</h2>
+                        <p class="fragment fade up">immutable</p>
+                        <p class="fragment fade up">configuration management</p>
+                        <p class="fragment fade up">orchestration</p>
+                        <p class="fragment fade up">framework</p>
+                        <aside class="notes">
+                            <ul>
+                                <li>immutable:: once something is created it cannot be changed</li>
+                                <li>config management:: managing a set of resources in an immutable fashion using software</li>
+                                <li>orchestration:: the planning, cooridination, and execution of a related series of tasks</li>
+                                <li>framework:: a software structure created to facilitate the implemntation of a series of tasks</li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- Problem To Solve -->
+				<section>
+                    <h2>What's Wrong With This Picture</h2>
+                    <img src="images/download.jpeg"></p>
+                    <aside class="notes">
+                        <ul>
+                            <li>shared PD and needed to maintain my own while respecting other orgs</li>
+                            <li>operational contact directory, confluence was not working anymore</li>
+                            <li>single src of truth (no more team pages)</li>
+                            <li>compilance and audit trail</li>
+                            <li>team mandate</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                 <!-- Tool Selection -->
+                <section>
+                    <h2> Let's Go Shopping </h2>
+                    <section>
+                    </section>
+                    <section>
+                        <h2>Pagerduty?</h2>
+                        <p>
+                            <small>
+                                Hint: It's your mom
+                            </small>
+                        </p>
+                        <aside class="notes">
+                            <ul>
+                                <li>send it alerts it yells at you</li>
+                                <li>generate alerts via ui or api it yells at you</li>
+                                <li>(you get the point, it yells at you when you screw up or something breaks)</li>
+                                <li>notice I dind't say it cleans up after you</li>
+                            </ul>
+                        </aside>
+                    </section>
+
+                    <!-- What is Ansible -->
+                    <section>
+                        <h2>Ansible?</h2>
+                        <p>
+                            <small>
+                                Hint: It likes whitespace
+                            </small>
+                        </p>
+                        <aside class="notes">
+                            <ul>
+                                <li>configuration mgmt tool (if needed)</li>
+                                <li>orchestration tool</li>
+                                <li>no client</li>
+                                <li>in use for network configuration</li>
+
+                            </ul>
+                        </aside>
+                    </section>
+
+                    <!-- What is Puppet -->
+                    <section>
+                        <h2>Puppet?</h2>
+                        <p>
+                            <small>
+                                Hint: true (eventually consistent || eventually a pia)
+                            </small>
+                        </p>
+                        <aside class="notes">
+                            <ul>
+                                <li>configuration mgmt tool</li>
+                                <li>orchestration tool (if needed)</li>
+                                <li>client based</li>
+                                <li>no existing pd bits</li>
+                                <li>Salesforce standard tool for config mgmt</li>
+                            </ul>
+                        </aside>
+                    </section>
+
+                    <!-- What is Puppet -->
+                    <section>
+                        <h2>Chef?</h2>
+                        <p>
+                            <small>
+                                Hint: bork, bork, bork
+                            </small>
+                        </p>
+                        <aside class="notes">
+                            <ul>
+                                <li>configuration mgmt tool</li>
+                                <li>orchestration tool (if needed)</li>
+                                <li>client based</li>
+                                <li>harder to teach and maintain</li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- Why I used Ansible -->
+                <section>
+                    <h2>Why Ansible?</h2>
+                    <aside class="notes">
+                        <ul>
+                            <li>I like Python</li>
+                            <li>Chef was not an option and I don't know Puppet well enough</li>
+                            <li>Chef and Puppet are client based, clients != containers</li>
+                            <li>I needed a framework for lot of other things as well</li>
+                            <li>Terraform is primarliy a provisioner, different use case</li>
+                            <li>My Python is stronger than my Golang (no time to learn new lang) and Ruby is ugly</li>
+                            <li>Ansible is a framework, terraform is part of a framework, chef/pupet are client based</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <!-- PART 2 Make It Happen -->
+                <!-- Scope -->
+                <section>
+                    <section>
+                        <h2>Scope</h2>
+                        <p class="fragment fade up">manage user contact info</p>
+                        <p class="fragment fade up">manage team membership</p>
+                        <aside class="notes">
+                            <ul>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- Definition of Done -->
+                <section>
+                    <section>
+                        <h2>Definition Of Done</h2>
+                        <p class="fragment fade up">repo for storing info</p>
+                        <p class="fragment fade up">documentation for project</p>
+                        <p class="fragment fade up">running project</p>
+                        <aside class="notes">
+                            <ul>
+                                <li>I know tests are not listed, generally they are</li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- The Code -->
+                <section>
+                    <section>
+                        <h2>The Code</h2>
+                        </section>
+                        <section>
+                            <h3>Pagerduty Teams</h3>
+                            <p class="fragment fade up">Create, Update, Remove Teams</p>
+                            <p class="fragment fade up">Add and Remove Users</p>
+                            <p class="fragment fade up"><a href="http://purple.com">module</a></p>
+                        </section>
+                        <section>
+                            <h3>Pagerduty Users</h3>
+                            <p class="fragment fade up">Create, Update, Remove Users</p>
+                            <p class="fragment fade up"><a href="http://purple.com">module</a></p>
+                        </section>
+                        <section>
+                            <h3>Pagerduty Contact Methods</h3>
+                            <p class="fragment fade up">Create, Update, Delete Contact Methods</p>
+                            <p class="fragment fade up"><a href="http://purple.com">module</a></p>
+                        </section>
+                        <aside class="notes">
+                            <ul>
+                                <li>Who wants to hear me explain a ton of code on a slide</li>
+                                <li>Teams need to come first, if it is not there it will puke NOT IGNORE</li>
+                                <li>Email is the user key, that stays constant</li>
+                                <li>Contact methods can't be updated key is type/address</li>
+                            </ul>
+                        </aside>
+                </section>
+
+                <!-- Problems -->
+                <section>
+                    <section>
+                        <h2>Problems</h2>
+                        <p class="fragment fade up">existing pagerduty modules</p>
+                        <p class="fragment fade up">learning how to do this properly</p>
+                        <p class="fragment fade up">contact info api was hard to work with</p>
+                        <aside class="notes">
+                            <ul>
+                                <li>talk on irc and created new sub directory</li>
+                                <li>making this immutable was hard at first, new way of thinking</li>
+                                <li>api docs had a mistake, no create push</li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- Refactoring -->
+                <section>
+                    <section>
+                        <h2>Refactor..Refactor</h2>
+                        <p class="fragment fade up">too many api calls</p>
+                        <p class="fragment fade up">wanted to store users like inventory in json</p>
+                        <p class="fragment fade up">proper error handling</p>
+                        <p class="fragment fade up">proper exit codes</p>
+                        <aside class="notes">
+                            <ul>
+                                <li>inital run took way to long due to api calls</li>
+                                <li>json is easier to parse for machines</li>
+                                <li>error handling and "changed" vs "not changed"</li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- PART 3 Lessons -->
+                <!-- The Good -->
+                <section>
+                    <section>
+                        <h2>The Good</h2>
+                        <p class="fragment fade up">wrote Python again after Ruby and Golang </p>
+                        <p class="fragment fade up">learned about Ansible at a low level</p>
+                        <p class="fragment fade up">learned a lot about my boss (all good)</p>
+                        <p class="fragment fade up">learned about immutable infrastructure from a new perspective</p>
+                        <aside class="notes">
+                            <ul>
+                                <li>I thought I knew Ansible, I didn't</li>
+                                <li>remember to always have fun</li>
+                                <li>terraform -> ansible "fail fast and pivot"</li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- The Bad -->
+                <section>
+                    <section>
+                        <h2>The Bad</h2>
+                        <p class="fragment fade up">took longer than I thought</p>
+                        <p class="fragment fade up">required too much refactoring</p>
+                        <p class="fragment fade up">mgmt expectations <i>vs</i> what was possible in reality</p>
+                        <p class="fragment fade up">had to be careful not to over sell skillset or product</p>
+                        <aside class="notes">
+                            <ul>
+                                <li>I should of done more research about what i was getting myself into</li>
+                                <li>mgmt saw automate all things at times</li>
+                                <li>I am good, NOT that good</li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- The Bad -->
+                <section>
+                    <section>
+                        <h2>WTF</h2>
+                        <p class="fragment fade up">legal..patents..GPLv3..Oh My! </p>
+                        <p class="fragment fade up">who owns this, who fixes this, why build this</p>
+                        <p class="fragment fade up">security loves their secrets</p>
+                        <aside class="notes">
+                            <ul>
+                                <li>took almost 2 months before I could relase any code to Ansible</li>
+                                <li>large company problems, can't we just use Perl or buy something</li>
+                                <li>token management</li>
+                                <li>being my own pm is hard</li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- PART 4 Take Away -->
+                <!-- Take Away -->
+                <section>
+                    <section>
+                        <h2>Take Away</h2>
+                        <p class="fragment fade up">don't be afraid to fail fast and pivot</p>
+                        <p class="fragment fade up">plan before coding</p>
+                        <p class="fragment fade up">know your customer</p>
+                        <p class="fragment fade up">dont be afraid to over sell yourself in a calculated way to get the project you want</p>
+                        <aside class="notes">
+                            <ul>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </aside>
+                    </section>
+                </section>
+
+                <!-- Questions -->
+                <section>
+                    <h2>Questions?</h2>
+                    <ul>
+                        <li>Slack: <a href="https://purple.com">Lowell Tech Workers</a></li>
+                        <li>Twitter: <a href="https://twitter.com/CaffeinatedEng">@CaffeinatedEng</a></li>
+                        <li>Github: <a href="https://github.com/mattyjones">mattyjones</a></li>
+                        <li>Meetup: <a href="https://www.meetup.com/Lowell-Area-Tech-Worker-Meetup/">Lowell Tech Workers</a></li>
+                        <li>Salesforce is <a href="https://www.salesforce.com/company/careers/">hiring</a></li>
+                    </ul>
+                </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
